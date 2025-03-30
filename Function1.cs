@@ -11,7 +11,7 @@ namespace RealEstate
 
         public Function1(ILogger<Function1> logger)
         {
-            _logger = logger;
+            _logger = logger;   
         }
 
         [Function("Function1")]
