@@ -36,6 +36,22 @@ Azure App Service (Web App / Azure Function App)
      |
      +--> Azure Monitor / Application Insights (Telemetry)
 ```
+Here’s the **Azure architecture diagram** visualizing the flow from the HTML5 UI to all Azure services involved in the re-platformed interactive housing floor plan solution.
+
+
+````mermaid
+graph TD
+    A[User HTML5 Web UI] --> B[Azure App Service / Function App]
+    B --> C[Azure SQL Database]
+    B --> D[Azure Service Bus Queue/Topic]
+    B --> E[Azure Blob Storage Floor Plan Files]
+    D --> F[Azure Table Storage Event Logs]
+    D --> E
+    D --> C
+    G[Azure Data Factory Legacy Import] --> C
+    H[Azure Monitor / App Insights] --> B
+````
+
 
 ---
 
@@ -152,21 +168,4 @@ CREATE TABLE LegacyDataAudit (
 - **Historical Data Strategy**: Legacy audit tracking with Azure Data Factory and `LegacyDataAudit`.
 
 ---
-
-Here’s the **Azure architecture diagram** visualizing the flow from the HTML5 UI to all Azure services involved in the re-platformed interactive housing floor plan solution.
-
-Now here’s the **Mermaid diagram** for the same:
-
-````mermaid
-graph TD
-    A[User HTML5 Web UI] --> B[Azure App Service / Function App]
-    B --> C[Azure SQL Database]
-    B --> D[Azure Service Bus Queue/Topic]
-    B --> E[Azure Blob Storage Floor Plan Files]
-    D --> F[Azure Table Storage Event Logs]
-    D --> E
-    D --> C
-    G[Azure Data Factory Legacy Import] --> C
-    H[Azure Monitor / App Insights] --> B
-````
 
