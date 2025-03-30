@@ -12,18 +12,18 @@ using Microsoft.Azure.Functions.Worker;
 namespace RealEstate
 
 {
-    public class Customizations
+    public class LegacyDataAudit
     {
         private readonly ILogger _logger;
 
-        public Customizations(ILogger<Customizations> logger)
+        public LegacyDataAudit(ILogger<LegacyDataAudit> logger)
         {
             _logger = logger;
         }
 
         private HttpRequest _req;
         private NameValueCollection nvc = new NameValueCollection();
-        [Function("customizations")]
+        [Function("legacylataaudit")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req)
         {
