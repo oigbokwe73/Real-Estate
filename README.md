@@ -166,4 +166,3 @@ graph TD
     H[Azure Monitor / App Insights] --> B
 ````
 
-Would you like me to generate this as a downloadable PNG or include sample Azure Bicep or Terraform for provisioning these resources too?
