@@ -1,3 +1,7 @@
+The client is a Real Estate Interactive Technology firm based in Canada. They wanted to build an interactive application to dynamically customize housing floor plans to delight their customers. They had a flash based tool which they needed to re-platform into HTML5 based interactive platform. For this, they wanted a re-engineering solution for their legacy product suite. To maintain huge critical historical data from legacy systems, client wanted a cloud-based solution.
+
+The key challenge meant in re-engineering legacy systems as they were built in VB6 and outdated technology. As HTML provide limited events like single click, double click and right click, client wanted to re-platform it to more usable and interactive design solution. The client required a communicable design framework with more availability of design functions.
+
 Thanks for laying out the scenario so clearly—this is a classic legacy modernization use case, with an interesting twist around UI interactivity and historical data preservation. Below is a complete solution design that covers the **SQL database tables**, **Azure components** (Service Bus, Storage), and a narrative around the **business and technical scenario**.
 
 ---
