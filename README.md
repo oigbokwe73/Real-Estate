@@ -155,7 +155,7 @@ Now here’s the **Mermaid diagram** for the same:
 
 ````mermaid
 graph TD
-    A[User (HTML5 Web UI)] --> B[Azure App Service / Function App]
+    A[User HTML5 Web UI] --> B[Azure App Service / Function App]
     B --> C[Azure SQL Database]
     B --> D[Azure Service Bus Queue/Topic]
     B --> E[Azure Blob Storage Floor Plan Files]
