@@ -1,0 +1,64 @@
+﻿{
+  "Id": "GetJsonPayload",
+  "LineOfBusinessProcessData": [
+    {
+      "Key": "object",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.ProcessData"
+    }
+  ],
+  "Type": "",
+  "DataFlowProcess": [
+    {
+      "Key": "ConvertStringToStream",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "ConvertStringToStream",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "ReadJsonAsStream",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "ReadJsonAsStream",
+          "Value": "yes"
+        },
+        {
+          "Key": "messageformat",
+          "Value": "application/json"
+        }
+      ]
+    },
+    {
+      "Key": "WriteToAzureStorage",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "CreateRecordForAzureTableBatch",
+          "Value": "yes"
+        },
+        {
+          "Key": "BatchSize",
+          "Value": "100"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "TableName",
+          "Value": "training20250416"
+        }
+      ]
+    }
+  ]
+}
