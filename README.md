@@ -208,18 +208,15 @@ By following these steps, you'll have a serverless API in Azure that uses Servic
 
 |FileName|Description|
 |:----|:----|
-|99F77BEF300E4660A63A939ADD0BCF68.json| **Upload File** Parse CSV file --> Write Batched Files To Storage|
-|43EFE991E8614CFB9EDECF1B0FDED37A.json| **File Parser** Parse CSV file --> File received from SFTP will use this process to parse files|
-|43EFE991E8614CFB9EDECF1B0FDED37D.json| **Upload File** Parse JSON/CSV Directly to NO SQL DB|
-|43EFE991E8614CFB9EDECF1B0FDED37C.json| **Service Bus Trigger for SQL DB** | Receive JSON payload and insert into SQL DB|
-|43EFE991E8614CFB9EDECF1B0FDED37F.json| **Service Bus Trigger for No SQL DB** | Receive JSON payload and insert into NO SQL DB|
-|43EFE991E8614CFB9EDECF1B0FDED37E.json| **Blob Trigger** Send parsed/sharded file  to Send to Service Bus|
-|43EFE991E8614CFB9EDECF1B0FDED37B.json| **Search Resullt from NO SQLDB** |
-|43EFE991E8614CFB9EDECF1B0FDED37G.json| **Search SQL DB. Return resultset** |
-|3FB620B0E0FD4E8F93C9E4D839D00E1E.json| **Copy File from SFTP into the pickup folder** |
-|3FB620B0E0FD4E8F93C9E4D839D00E1F.json| **Create a new Record in NoSQL Database** |
-|CC244934898F46789734A9437B6F76CA.json| Encode Payload Request |
-|6B427917E36A4DA281D57F9A64AD9D55.json| Get reports from DB  |
+|0F52331916F24E3DA3CC64A74E52AC6E.json| Create a user |
+|6347356F99554F82BF498ECCC3B14C58.json| Retrieve user information|
+|F4A6650EFDF54314A46AFAF9D8F9C700.json| Update user information|
+|00A490C5637E4634AA146E966C15AA71.json| Delete user information|
+
+|0F52331916F24E3DA3CC64A74E52AC6E.json| Create a user |
+|6347356F99554F82BF498ECCC3B14C58.json| Retrieve user information|
+|F4A6650EFDF54314A46AFAF9D8F9C700.json| Update user information|
+|00A490C5637E4634AA146E966C15AA71.json| Delete user information|
 
 
 > Create the following blob containers and share in azure storage
