@@ -399,16 +399,6 @@ Serialized format for SQL:
 
 ---
 
-Would you like a Postman collection for these samples, or an OpenAPI (Swagger) spec describing the API that handles these payloads?
-
-
-
-
-Would you like a downloadable `.sql` file or a PowerShell script to execute and deploy these to your Azure SQL environment?
-
----
-
-Would you like me to generate a `.sql` file for download containing all these procedures?
 
 
 ## ☁️ **Azure Services Involved**
