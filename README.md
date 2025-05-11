@@ -54,115 +54,92 @@ graph TD
 
 
 ---
+Below is a set of SQL Server **stored procedures** using `UNIQUEIDENTIFIER` as the primary key type for the four tables:
 
-## 🗃️ **SQL Database Tables Design**
+---
 
-### 1. **Users**
+## 🛠️ SQL Setup (Tables with `UNIQUEIDENTIFIER`)
+
+Before the stored procedures, here’s a refined version of the table schema using `UNIQUEIDENTIFIER`:
+
 ```sql
+-- Users table (referenced by Projects)
 CREATE TABLE Users (
-    UserID INT PRIMARY KEY IDENTITY,
+    UserID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Username NVARCHAR(50) NOT NULL,
     Email NVARCHAR(100) UNIQUE NOT NULL,
-    Role NVARCHAR(20), -- Admin, Designer, Customer
+    Role NVARCHAR(20),
     CreatedAt DATETIME DEFAULT GETDATE()
 );
-```
 
-### 2. **Projects**
-```sql
 CREATE TABLE Projects (
-    ProjectID INT PRIMARY KEY IDENTITY,
-    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    ProjectID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    UserID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Users(UserID),
     ProjectName NVARCHAR(100),
     Description NVARCHAR(500),
     CreatedAt DATETIME DEFAULT GETDATE(),
     LastModified DATETIME
 );
-```
 
-### 3. **FloorPlans**
-```sql
 CREATE TABLE FloorPlans (
-    FloorPlanID INT PRIMARY KEY IDENTITY,
-    ProjectID INT FOREIGN KEY REFERENCES Projects(ProjectID),
+    FloorPlanID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    ProjectID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Projects(ProjectID),
     FloorPlanName NVARCHAR(100),
     BaseFilePath NVARCHAR(200),
     ThumbnailUrl NVARCHAR(200),
     CreatedAt DATETIME DEFAULT GETDATE()
 );
-```
 
-### 4. **Customizations**
-```sql
 CREATE TABLE Customizations (
-    CustomizationID INT PRIMARY KEY IDENTITY,
-    FloorPlanID INT FOREIGN KEY REFERENCES FloorPlans(FloorPlanID),
-    ComponentType NVARCHAR(50), -- e.g. Wall, Window, Door
-    Properties NVARCHAR(MAX),   -- JSON string storing properties like size, color, orientation
+    CustomizationID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    FloorPlanID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES FloorPlans(FloorPlanID),
+    ComponentType NVARCHAR(50),
+    Properties NVARCHAR(MAX),
     PositionX FLOAT,
     PositionY FLOAT,
     CreatedAt DATETIME DEFAULT GETDATE()
 );
-```
 
-### 5. **LegacyDataAudit**
-```sql
 CREATE TABLE LegacyDataAudit (
-    AuditID INT PRIMARY KEY IDENTITY,
-    LegacySystemID INT,
+    AuditID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    LegacySystemID UNIQUEIDENTIFIER,
     DataType NVARCHAR(50),
     SourceFileName NVARCHAR(100),
     ImportedBy NVARCHAR(100),
-    ImportDate DATETIME,
-    Status NVARCHAR(20) -- Imported, Failed, Validated
+    ImportDate DATETIME DEFAULT GETDATE(),
+    Status NVARCHAR(20)
 );
 ```
 
 ---
 
-Below are the **SQL Stored Procedures** for full **CRUD operations** on the following tables:
+## 🔄 Stored Procedures
 
-1. `Projects`
-2. `FloorPlans`
-3. `Customizations`
-4. `LegacyDataAudit`
-
-Each set includes `Create`, `Read`, `Update`, and `Delete` stored procedures.
-
----
-
-## 🧱 **1. Projects**
-
-### **Create**
+### ✅ `Projects` CRUD
 
 ```sql
-CREATE PROCEDURE sp_CreateProject
-    @UserID INT,
+-- Create
+CREATE PROCEDURE usp_Project_Create
+    @UserID UNIQUEIDENTIFIER,
     @ProjectName NVARCHAR(100),
     @Description NVARCHAR(500)
 AS
 BEGIN
-    INSERT INTO Projects (UserID, ProjectName, Description, CreatedAt, LastModified)
-    VALUES (@UserID, @ProjectName, @Description, GETDATE(), GETDATE());
-END
-```
+    INSERT INTO Projects (ProjectID, UserID, ProjectName, Description, LastModified)
+    VALUES (NEWID(), @UserID, @ProjectName, @Description, GETDATE());
+END;
 
-### **Read**
-
-```sql
-CREATE PROCEDURE sp_GetProjectsByUser
-    @UserID INT
+-- Read
+CREATE PROCEDURE usp_Project_Read
+    @ProjectID UNIQUEIDENTIFIER
 AS
 BEGIN
-    SELECT * FROM Projects WHERE UserID = @UserID;
-END
-```
+    SELECT * FROM Projects WHERE ProjectID = @ProjectID;
+END;
 
-### **Update**
-
-```sql
-CREATE PROCEDURE sp_UpdateProject
-    @ProjectID INT,
+-- Update
+CREATE PROCEDURE usp_Project_Update
+    @ProjectID UNIQUEIDENTIFIER,
     @ProjectName NVARCHAR(100),
     @Description NVARCHAR(500)
 AS
@@ -172,55 +149,45 @@ BEGIN
         Description = @Description,
         LastModified = GETDATE()
     WHERE ProjectID = @ProjectID;
-END
-```
+END;
 
-### **Delete**
-
-```sql
-CREATE PROCEDURE sp_DeleteProject
-    @ProjectID INT
+-- Delete
+CREATE PROCEDURE usp_Project_Delete
+    @ProjectID UNIQUEIDENTIFIER
 AS
 BEGIN
     DELETE FROM Projects WHERE ProjectID = @ProjectID;
-END
+END;
 ```
 
 ---
 
-## 🧱 **2. FloorPlans**
-
-### **Create**
+### ✅ `FloorPlans` CRUD
 
 ```sql
-CREATE PROCEDURE sp_CreateFloorPlan
-    @ProjectID INT,
+-- Create
+CREATE PROCEDURE usp_FloorPlan_Create
+    @ProjectID UNIQUEIDENTIFIER,
     @FloorPlanName NVARCHAR(100),
     @BaseFilePath NVARCHAR(200),
     @ThumbnailUrl NVARCHAR(200)
 AS
 BEGIN
-    INSERT INTO FloorPlans (ProjectID, FloorPlanName, BaseFilePath, ThumbnailUrl, CreatedAt)
-    VALUES (@ProjectID, @FloorPlanName, @BaseFilePath, @ThumbnailUrl, GETDATE());
-END
-```
+    INSERT INTO FloorPlans (FloorPlanID, ProjectID, FloorPlanName, BaseFilePath, ThumbnailUrl)
+    VALUES (NEWID(), @ProjectID, @FloorPlanName, @BaseFilePath, @ThumbnailUrl);
+END;
 
-### **Read**
-
-```sql
-CREATE PROCEDURE sp_GetFloorPlansByProject
-    @ProjectID INT
+-- Read
+CREATE PROCEDURE usp_FloorPlan_Read
+    @FloorPlanID UNIQUEIDENTIFIER
 AS
 BEGIN
-    SELECT * FROM FloorPlans WHERE ProjectID = @ProjectID;
-END
-```
+    SELECT * FROM FloorPlans WHERE FloorPlanID = @FloorPlanID;
+END;
 
-### **Update**
-
-```sql
-CREATE PROCEDURE sp_UpdateFloorPlan
-    @FloorPlanID INT,
+-- Update
+CREATE PROCEDURE usp_FloorPlan_Update
+    @FloorPlanID UNIQUEIDENTIFIER,
     @FloorPlanName NVARCHAR(100),
     @BaseFilePath NVARCHAR(200),
     @ThumbnailUrl NVARCHAR(200)
@@ -231,56 +198,46 @@ BEGIN
         BaseFilePath = @BaseFilePath,
         ThumbnailUrl = @ThumbnailUrl
     WHERE FloorPlanID = @FloorPlanID;
-END
-```
+END;
 
-### **Delete**
-
-```sql
-CREATE PROCEDURE sp_DeleteFloorPlan
-    @FloorPlanID INT
+-- Delete
+CREATE PROCEDURE usp_FloorPlan_Delete
+    @FloorPlanID UNIQUEIDENTIFIER
 AS
 BEGIN
     DELETE FROM FloorPlans WHERE FloorPlanID = @FloorPlanID;
-END
+END;
 ```
 
 ---
 
-## 🧱 **3. Customizations**
-
-### **Create**
+### ✅ `Customizations` CRUD
 
 ```sql
-CREATE PROCEDURE sp_CreateCustomization
-    @FloorPlanID INT,
+-- Create
+CREATE PROCEDURE usp_Customization_Create
+    @FloorPlanID UNIQUEIDENTIFIER,
     @ComponentType NVARCHAR(50),
     @Properties NVARCHAR(MAX),
     @PositionX FLOAT,
     @PositionY FLOAT
 AS
 BEGIN
-    INSERT INTO Customizations (FloorPlanID, ComponentType, Properties, PositionX, PositionY, CreatedAt)
-    VALUES (@FloorPlanID, @ComponentType, @Properties, @PositionX, @PositionY, GETDATE());
-END
-```
+    INSERT INTO Customizations (CustomizationID, FloorPlanID, ComponentType, Properties, PositionX, PositionY)
+    VALUES (NEWID(), @FloorPlanID, @ComponentType, @Properties, @PositionX, @PositionY);
+END;
 
-### **Read**
-
-```sql
-CREATE PROCEDURE sp_GetCustomizationsByFloorPlan
-    @FloorPlanID INT
+-- Read
+CREATE PROCEDURE usp_Customization_Read
+    @CustomizationID UNIQUEIDENTIFIER
 AS
 BEGIN
-    SELECT * FROM Customizations WHERE FloorPlanID = @FloorPlanID;
-END
-```
+    SELECT * FROM Customizations WHERE CustomizationID = @CustomizationID;
+END;
 
-### **Update**
-
-```sql
-CREATE PROCEDURE sp_UpdateCustomization
-    @CustomizationID INT,
+-- Update
+CREATE PROCEDURE usp_Customization_Update
+    @CustomizationID UNIQUEIDENTIFIER,
     @ComponentType NVARCHAR(50),
     @Properties NVARCHAR(MAX),
     @PositionX FLOAT,
@@ -293,75 +250,66 @@ BEGIN
         PositionX = @PositionX,
         PositionY = @PositionY
     WHERE CustomizationID = @CustomizationID;
-END
-```
+END;
 
-### **Delete**
-
-```sql
-CREATE PROCEDURE sp_DeleteCustomization
-    @CustomizationID INT
+-- Delete
+CREATE PROCEDURE usp_Customization_Delete
+    @CustomizationID UNIQUEIDENTIFIER
 AS
 BEGIN
     DELETE FROM Customizations WHERE CustomizationID = @CustomizationID;
-END
+END;
 ```
 
 ---
 
-## 🧱 **4. LegacyDataAudit**
-
-### **Create**
+### ✅ `LegacyDataAudit` CRUD
 
 ```sql
-CREATE PROCEDURE sp_CreateLegacyDataAudit
-    @LegacySystemID INT,
+-- Create
+CREATE PROCEDURE usp_LegacyDataAudit_Create
+    @LegacySystemID UNIQUEIDENTIFIER,
     @DataType NVARCHAR(50),
     @SourceFileName NVARCHAR(100),
     @ImportedBy NVARCHAR(100),
     @Status NVARCHAR(20)
 AS
 BEGIN
-    INSERT INTO LegacyDataAudit (LegacySystemID, DataType, SourceFileName, ImportedBy, ImportDate, Status)
-    VALUES (@LegacySystemID, @DataType, @SourceFileName, @ImportedBy, GETDATE(), @Status);
-END
-```
+    INSERT INTO LegacyDataAudit (AuditID, LegacySystemID, DataType, SourceFileName, ImportedBy, Status)
+    VALUES (NEWID(), @LegacySystemID, @DataType, @SourceFileName, @ImportedBy, @Status);
+END;
 
-### **Read**
-
-```sql
-CREATE PROCEDURE sp_GetLegacyDataAuditBySystem
-    @LegacySystemID INT
+-- Read
+CREATE PROCEDURE usp_LegacyDataAudit_Read
+    @AuditID UNIQUEIDENTIFIER
 AS
 BEGIN
-    SELECT * FROM LegacyDataAudit WHERE LegacySystemID = @LegacySystemID;
-END
-```
+    SELECT * FROM LegacyDataAudit WHERE AuditID = @AuditID;
+END;
 
-### **Update**
-
-```sql
-CREATE PROCEDURE sp_UpdateLegacyDataAuditStatus
-    @AuditID INT,
+-- Update
+CREATE PROCEDURE usp_LegacyDataAudit_Update
+    @AuditID UNIQUEIDENTIFIER,
     @Status NVARCHAR(20)
 AS
 BEGIN
     UPDATE LegacyDataAudit
     SET Status = @Status
     WHERE AuditID = @AuditID;
-END
-```
+END;
 
-### **Delete**
-
-```sql
-CREATE PROCEDURE sp_DeleteLegacyDataAudit
-    @AuditID INT
+-- Delete
+CREATE PROCEDURE usp_LegacyDataAudit_Delete
+    @AuditID UNIQUEIDENTIFIER
 AS
 BEGIN
     DELETE FROM LegacyDataAudit WHERE AuditID = @AuditID;
-END
+END;
 ```
+
+---
+
+Would you like a downloadable `.sql` file or a PowerShell script to execute and deploy these to your Azure SQL environment?
 
 ---
 
