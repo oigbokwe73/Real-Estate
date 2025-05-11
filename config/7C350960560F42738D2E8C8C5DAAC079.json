@@ -1,5 +1,5 @@
 ﻿{
-  "Id": "GetJsonPayload",
+  "Id": "ConnectingToSQLDB",
   "LineOfBusinessProcessData": [
     {
       "Key": "object",
@@ -9,54 +9,54 @@
   "Type": "",
   "DataFlowProcess": [
     {
-      "Key": "ConvertStringToStream",
+      "Key": "MessageBuilderProcess",
       "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
       "Async": "false",
       "IsEnable": "true",
       "DataFlowProcessParameters": [
         {
-          "Key": "ConvertStringToStream",
+          "Key": "QueryBuilder",
           "Value": "yes"
+        },
+        {
+          "Key": "statement",
+          "Value": "usp_FloorPlan_Read '@{FloorPlanID}'"
+        },
+        {
+          "Key": "filters",
+          "Value": "[{\"Key\": \"@{FloorPlanID}\",\"Value\": \"FloorPlanID \"}]"
         }
       ]
     },
     {
-      "Key": "ReadJsonAsStream",
-      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Key": "SerchforResultSet",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.ConnectToDBProcess",
       "Async": "false",
       "IsEnable": "true",
       "DataFlowProcessParameters": [
         {
-          "Key": "ReadJsonAsStream",
+          "Key": "ConnectToDatabaseJSONResultSet",
+          "Value": "yes"
+        },
+        {
+          "Key": "connectionstring",
+          "Value": "DatabaseConnection"
+        },
+        {
+          "Key": "SearchTerm",
+          "Value": "query"
+        },
+        {
+          "Key": "validatefornulls",
           "Value": "yes"
         },
         {
           "Key": "messageformat",
           "Value": "application/json"
-        }
-      ]
-    },
-    {
-      "Key": "WriteToAzureStorage",
-      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
-      "Async": "false",
-      "IsEnable": "true",
-      "DataFlowProcessParameters": [
+        },
         {
-          "Key": "CreateRecordForAzureTableBatch",
+          "Key": "FormatNotIndented",
           "Value": "yes"
-        },
-        {
-          "Key": "BatchSize",
-          "Value": "100"
-        },
-        {
-          "Key": "StorageAccount",
-          "Value": "AzureWebJobsStorage"
-        },
-        {
-          "Key": "TableName",
-          "Value": "training20250416"
         }
       ]
     }

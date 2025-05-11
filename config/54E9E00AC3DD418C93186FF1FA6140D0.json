@@ -1,5 +1,5 @@
 ﻿{
-  "Id": "GetJsonPayload",
+  "Id": "UploadDocumentByUser",
   "LineOfBusinessProcessData": [
     {
       "Key": "object",
@@ -9,46 +9,162 @@
   "Type": "",
   "DataFlowProcess": [
     {
-      "Key": "ConvertStringToStream",
-      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Key": "VerifyToken",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.TokenProcess",
       "Async": "false",
       "IsEnable": "true",
       "DataFlowProcessParameters": [
         {
-          "Key": "ConvertStringToStream",
-          "Value": "yes"
-        }
-      ]
-    },
-    {
-      "Key": "ReadJsonAsStream",
-      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
-      "Async": "false",
-      "IsEnable": "true",
-      "DataFlowProcessParameters": [
-        {
-          "Key": "ReadJsonAsStream",
+          "Key": "VerifyTokenFromHeader",
           "Value": "yes"
         },
         {
-          "Key": "messageformat",
-          "Value": "application/json"
+          "Key": "TokenHeaderName",
+          "Value": "token"
+        },
+        {
+          "Key": "EncryptionToken",
+          "Value": "EncryptionToken"
+        },
+        {
+          "Key": "TokenFailure",
+          "Value": "Token has expired"
         }
       ]
     },
     {
-      "Key": "WriteToAzureStorage",
+      "Key": "WriteAllHeadersToLog",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.HeaderInfoProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "WriteAllHeadersToLog",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "CreatePayloadFromHeader",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.HeaderInfoProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "CreatePayloadFromHeaders",
+          "Value": "yes"
+        },
+        {
+          "Key": "Headers",
+          "Value": "[{\"Key\": \"token\",\"Value\": \"token\"}]"
+        },
+        {
+          "Key": "PropertyName",
+          "Value": "fileid"
+        }
+      ]
+    },
+    {
+      "Key": "GetTokenFromPayload",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.TransformationProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "TransformJSONPayload",
+          "Value": "yes"
+        },
+        {
+          "Key": "remoteURL",
+          "Value": "https://www.xenhey.com/api/store/D0BE7535D43D40909523285E71386C1D"
+        },
+        {
+          "Key": "RemoteTemplateName",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "DecryptToken",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.TokenProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "DecryptToken",
+          "Value": "yes"
+        },
+        {
+          "Key": "EncryptionToken",
+          "Value": "EncryptionToken"
+        }
+      ]
+    },
+    {
+      "Key": "AddHeaderInformationToPayload",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.HeaderInfoProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "AddHeaderToPayload",
+          "Value": "yes"
+        },
+        {
+          "Key": "filters",
+          "Value": "[{\"Key\": \"FileName\",\"Value\": \"FileName\"},{\"Key\": \"FileContentType\",\"Value\": \"FileContentType\"},{\"Key\": \"FileLength\",\"Value\": \"FileLength\"}]"
+        },
+        {
+          "Key": "PropertyName",
+          "Value": "fileid"
+        },
+        {
+          "Key": "CorrelationId",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "WriteFileToStorage",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.BlobStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "AddNewFileFileToStorageFromRequestPayload",
+          "Value": "yes"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "FolderName",
+          "Value": "UserID"
+        },
+        {
+          "Key": "FileName",
+          "Value": "FileName"
+        },
+        {
+          "Key": "Container",
+          "Value": "documentstore"
+        },
+        {
+          "Key": "DocType",
+          "Value": "FileContentType"
+        }
+      ]
+    },
+    {
+      "Key": "DeleteRecordFromTable",
       "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
       "Async": "false",
       "IsEnable": "true",
       "DataFlowProcessParameters": [
         {
-          "Key": "CreateRecordForAzureTableBatch",
+          "Key": "DeleteRecordsFromTableStore",
           "Value": "yes"
-        },
-        {
-          "Key": "BatchSize",
-          "Value": "100"
         },
         {
           "Key": "StorageAccount",
@@ -56,7 +172,71 @@
         },
         {
           "Key": "TableName",
-          "Value": "training20250416"
+          "Value": "documentstore"
+        },
+        {
+          "Key": "statement",
+          "Value": "UserID eq '${UserID}' and FileName eq '${FileName}'"
+        },
+        {
+          "Key": "filters",
+          "Value": "[{\"Key\": \"${UserID}\",\"Value\": \"UserID\"},{\"Key\": \"${FileName}\",\"Value\": \"FileName\"}]"
+        }
+      ]
+    },
+    {
+      "Key": "WriteToDataStore",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "CreateRecordForAzureTable",
+          "Value": "yes"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "TableName",
+          "Value": "documentstore"
+        }
+      ]
+    },
+    {
+      "Key": "FormatResponseAfterUploadOfFile",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.TransformationProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "TransformJSONPayload",
+          "Value": "yes"
+        },
+        {
+          "Key": "remoteURL",
+          "Value": "https://www.xenhey.com/api/store/8FA694FE58164ECFA3724F5727F3BCE6"
+        },
+        {
+          "Key": "RemoteTemplateName",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "ReplaceContentTypeInHeader",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.HeaderInfoProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "ReplaceHeaders",
+          "Value": "yes"
+        },
+        {
+          "Key": "Headers",
+          "Value": "[{\"Key\": \"Content-Type\",\"Value\": \"application/json\"}]"
         }
       ]
     }
