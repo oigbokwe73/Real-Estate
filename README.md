@@ -120,6 +120,254 @@ CREATE TABLE LegacyDataAudit (
 
 ---
 
+Below are the **SQL Stored Procedures** for full **CRUD operations** on the following tables:
+
+1. `Projects`
+2. `FloorPlans`
+3. `Customizations`
+4. `LegacyDataAudit`
+
+Each set includes `Create`, `Read`, `Update`, and `Delete` stored procedures.
+
+---
+
+## 🧱 **1. Projects**
+
+### **Create**
+
+```sql
+CREATE PROCEDURE sp_CreateProject
+    @UserID INT,
+    @ProjectName NVARCHAR(100),
+    @Description NVARCHAR(500)
+AS
+BEGIN
+    INSERT INTO Projects (UserID, ProjectName, Description, CreatedAt, LastModified)
+    VALUES (@UserID, @ProjectName, @Description, GETDATE(), GETDATE());
+END
+```
+
+### **Read**
+
+```sql
+CREATE PROCEDURE sp_GetProjectsByUser
+    @UserID INT
+AS
+BEGIN
+    SELECT * FROM Projects WHERE UserID = @UserID;
+END
+```
+
+### **Update**
+
+```sql
+CREATE PROCEDURE sp_UpdateProject
+    @ProjectID INT,
+    @ProjectName NVARCHAR(100),
+    @Description NVARCHAR(500)
+AS
+BEGIN
+    UPDATE Projects
+    SET ProjectName = @ProjectName,
+        Description = @Description,
+        LastModified = GETDATE()
+    WHERE ProjectID = @ProjectID;
+END
+```
+
+### **Delete**
+
+```sql
+CREATE PROCEDURE sp_DeleteProject
+    @ProjectID INT
+AS
+BEGIN
+    DELETE FROM Projects WHERE ProjectID = @ProjectID;
+END
+```
+
+---
+
+## 🧱 **2. FloorPlans**
+
+### **Create**
+
+```sql
+CREATE PROCEDURE sp_CreateFloorPlan
+    @ProjectID INT,
+    @FloorPlanName NVARCHAR(100),
+    @BaseFilePath NVARCHAR(200),
+    @ThumbnailUrl NVARCHAR(200)
+AS
+BEGIN
+    INSERT INTO FloorPlans (ProjectID, FloorPlanName, BaseFilePath, ThumbnailUrl, CreatedAt)
+    VALUES (@ProjectID, @FloorPlanName, @BaseFilePath, @ThumbnailUrl, GETDATE());
+END
+```
+
+### **Read**
+
+```sql
+CREATE PROCEDURE sp_GetFloorPlansByProject
+    @ProjectID INT
+AS
+BEGIN
+    SELECT * FROM FloorPlans WHERE ProjectID = @ProjectID;
+END
+```
+
+### **Update**
+
+```sql
+CREATE PROCEDURE sp_UpdateFloorPlan
+    @FloorPlanID INT,
+    @FloorPlanName NVARCHAR(100),
+    @BaseFilePath NVARCHAR(200),
+    @ThumbnailUrl NVARCHAR(200)
+AS
+BEGIN
+    UPDATE FloorPlans
+    SET FloorPlanName = @FloorPlanName,
+        BaseFilePath = @BaseFilePath,
+        ThumbnailUrl = @ThumbnailUrl
+    WHERE FloorPlanID = @FloorPlanID;
+END
+```
+
+### **Delete**
+
+```sql
+CREATE PROCEDURE sp_DeleteFloorPlan
+    @FloorPlanID INT
+AS
+BEGIN
+    DELETE FROM FloorPlans WHERE FloorPlanID = @FloorPlanID;
+END
+```
+
+---
+
+## 🧱 **3. Customizations**
+
+### **Create**
+
+```sql
+CREATE PROCEDURE sp_CreateCustomization
+    @FloorPlanID INT,
+    @ComponentType NVARCHAR(50),
+    @Properties NVARCHAR(MAX),
+    @PositionX FLOAT,
+    @PositionY FLOAT
+AS
+BEGIN
+    INSERT INTO Customizations (FloorPlanID, ComponentType, Properties, PositionX, PositionY, CreatedAt)
+    VALUES (@FloorPlanID, @ComponentType, @Properties, @PositionX, @PositionY, GETDATE());
+END
+```
+
+### **Read**
+
+```sql
+CREATE PROCEDURE sp_GetCustomizationsByFloorPlan
+    @FloorPlanID INT
+AS
+BEGIN
+    SELECT * FROM Customizations WHERE FloorPlanID = @FloorPlanID;
+END
+```
+
+### **Update**
+
+```sql
+CREATE PROCEDURE sp_UpdateCustomization
+    @CustomizationID INT,
+    @ComponentType NVARCHAR(50),
+    @Properties NVARCHAR(MAX),
+    @PositionX FLOAT,
+    @PositionY FLOAT
+AS
+BEGIN
+    UPDATE Customizations
+    SET ComponentType = @ComponentType,
+        Properties = @Properties,
+        PositionX = @PositionX,
+        PositionY = @PositionY
+    WHERE CustomizationID = @CustomizationID;
+END
+```
+
+### **Delete**
+
+```sql
+CREATE PROCEDURE sp_DeleteCustomization
+    @CustomizationID INT
+AS
+BEGIN
+    DELETE FROM Customizations WHERE CustomizationID = @CustomizationID;
+END
+```
+
+---
+
+## 🧱 **4. LegacyDataAudit**
+
+### **Create**
+
+```sql
+CREATE PROCEDURE sp_CreateLegacyDataAudit
+    @LegacySystemID INT,
+    @DataType NVARCHAR(50),
+    @SourceFileName NVARCHAR(100),
+    @ImportedBy NVARCHAR(100),
+    @Status NVARCHAR(20)
+AS
+BEGIN
+    INSERT INTO LegacyDataAudit (LegacySystemID, DataType, SourceFileName, ImportedBy, ImportDate, Status)
+    VALUES (@LegacySystemID, @DataType, @SourceFileName, @ImportedBy, GETDATE(), @Status);
+END
+```
+
+### **Read**
+
+```sql
+CREATE PROCEDURE sp_GetLegacyDataAuditBySystem
+    @LegacySystemID INT
+AS
+BEGIN
+    SELECT * FROM LegacyDataAudit WHERE LegacySystemID = @LegacySystemID;
+END
+```
+
+### **Update**
+
+```sql
+CREATE PROCEDURE sp_UpdateLegacyDataAuditStatus
+    @AuditID INT,
+    @Status NVARCHAR(20)
+AS
+BEGIN
+    UPDATE LegacyDataAudit
+    SET Status = @Status
+    WHERE AuditID = @AuditID;
+END
+```
+
+### **Delete**
+
+```sql
+CREATE PROCEDURE sp_DeleteLegacyDataAudit
+    @AuditID INT
+AS
+BEGIN
+    DELETE FROM LegacyDataAudit WHERE AuditID = @AuditID;
+END
+```
+
+---
+
+Would you like me to generate a `.sql` file for download containing all these procedures?
+
+
 ## ☁️ **Azure Services Involved**
 
 ### 🔹 Azure App Service (or Azure Function App)
