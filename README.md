@@ -493,11 +493,24 @@ By following these steps, you'll have a serverless API in Azure that uses Servic
 |6347356F99554F82BF498ECCC3B14C58.json| Retrieve user information|
 |F4A6650EFDF54314A46AFAF9D8F9C700.json| Update user information|
 |00A490C5637E4634AA146E966C15AA71.json| Delete user information|
+|C6984C3FF692449CBE1971CC5D557919.json| Create a Project |
+|A60852F5BFB24EBB9893D74E9F24D9A2.json| Retrieve Project information|
+|96098FDB4E344351A7A2253961C1428A.json| Update Project information|
+|59F610180A354101818E8B7E3F6D4C3E.json| Delete Project information|
+|E168811CA94247F7B639018B08EF779A.json| Create a FloorPlan |
+|7C350960560F42738D2E8C8C5DAAC079.json| Retrieve FloorPlan information|
+|E1E04F9ADD654C0BAAFB209ADA31928C.json| Update FloorPlan information|
+|97FA2600849B49ABAA89FA3E8FB8A7BF.json| Delete FloorPlan information|
+|4F0ECE6FDB5844B8BA885DB7B8B095B8.json| Create Customizations |
+|54E9E00AC3DD418C93186FF1FA6140D0.json| Retrieve Customization information|
+|0057287B5A424B249352DB7CFB8965A6.json| Update Customizations information|
+|4AD78C7EFC1C4E46BFDE5D0966989EA5.json| Delete Customizations information|
+|24535F4292584A13A8C8087F11E140CB.json| Create a LegacyDataAudit |
+|6B16B4C53FE548A1A3CD05BE161257E2.json| Retrieve LegacyDataAudit information|
+|4A81D28F4A2B426B8E5ECCE240635CAE.json| Update LegacyDataAudit information|
+|3E124D634463492EB95C3E15EE319FEA.json| Delete LegacyDataAudit information|
 
-|0F52331916F24E3DA3CC64A74E52AC6E.json| Create a user |
-|6347356F99554F82BF498ECCC3B14C58.json| Retrieve user information|
-|F4A6650EFDF54314A46AFAF9D8F9C700.json| Update user information|
-|00A490C5637E4634AA146E966C15AA71.json| Delete user information|
+
 
 
 > Create the following blob containers and share in azure storage
