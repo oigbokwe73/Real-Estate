@@ -122,11 +122,14 @@ CREATE TABLE LegacyDataAudit (
 CREATE PROCEDURE usp_Project_Create
     @UserID UNIQUEIDENTIFIER,
     @ProjectName NVARCHAR(100),
-    @Description NVARCHAR(500)
+    @Description NVARCHAR(500),
+    @ProjectID UNIQUEIDENTIFIER = NULL,
 AS
 BEGIN
+ SET @ProjectID = NEWID();
     INSERT INTO Projects (ProjectID, UserID, ProjectName, Description, LastModified)
-    VALUES (NEWID(), @UserID, @ProjectName, @Description, GETDATE());
+    VALUES (@ProjectID, @UserID, @ProjectName, @Description, GETDATE());
+   SELECT * FROM LegacyDataAudit WHERE ProjectID = @ProjectID;
 END;
 
 -- Read
