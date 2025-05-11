@@ -311,6 +311,98 @@ END;
 ```
 
 ---
+Here’s a set of **sample JSON payloads** for each table in your solution: `Users`, `Projects`, `FloorPlans`, `Customizations`, and `LegacyDataAudit`.
+
+These payloads simulate the data you might **receive from a frontend** or use for **API testing**, such as with Postman or a JavaScript frontend sending requests to your Azure Function App or App Service API.
+
+---
+
+### 👤 **Users Table**
+
+```json
+{
+  "UserID": "bde02e77-147e-44f6-a7b5-15f81ec0c802",
+  "Username": "jdoe",
+  "Email": "jdoe@example.com",
+  "Role": "Designer"
+}
+```
+
+---
+
+### 🗂️ **Projects Table**
+
+```json
+{
+  "ProjectID": "e1b12d5e-378c-42ae-bacc-f0f83d84c71b",
+  "UserID": "bde02e77-147e-44f6-a7b5-15f81ec0c802",
+  "ProjectName": "Maple Townhouse Block A",
+  "Description": "Initial design for townhouse units in Maple Grove"
+}
+```
+
+---
+
+### 🏠 **FloorPlans Table**
+
+```json
+{
+  "FloorPlanID": "44f83f47-fb69-4b7f-9fcb-6e4edccae3f7",
+  "ProjectID": "e1b12d5e-378c-42ae-bacc-f0f83d84c71b",
+  "FloorPlanName": "2BHK North-Facing",
+  "BaseFilePath": "https://yourstorage.blob.core.windows.net/floorplans/2bhk-north.svg",
+  "ThumbnailUrl": "https://yourstorage.blob.core.windows.net/thumbnails/2bhk-north.png"
+}
+```
+
+---
+
+### 🎨 **Customizations Table**
+
+```json
+{
+  "CustomizationID": "c556a7e8-8046-4c4c-bc9e-87259d6bd013",
+  "FloorPlanID": "44f83f47-fb69-4b7f-9fcb-6e4edccae3f7",
+  "ComponentType": "Wall",
+  "Properties": {
+    "color": "#cccccc",
+    "thickness": "6in",
+    "material": "gypsum"
+  },
+  "PositionX": 200.5,
+  "PositionY": 118.75
+}
+```
+
+> Store `Properties` as a JSON **string** in SQL. The above is its expanded object view.
+
+Serialized format for SQL:
+
+```json
+"Properties": "{\"color\":\"#cccccc\",\"thickness\":\"6in\",\"material\":\"gypsum\"}"
+```
+
+---
+
+### 📜 **LegacyDataAudit Table**
+
+```json
+{
+  "AuditID": "ed3421e4-0e4b-432f-a03b-70db68b8829d",
+  "LegacySystemID": "98324ab0-1d1e-43c8-a70e-8b19e7ed9f56",
+  "DataType": "Project_Metadata",
+  "SourceFileName": "vb6_project_data_2023.csv",
+  "ImportedBy": "migration.service",
+  "Status": "Imported"
+}
+```
+
+---
+
+Would you like a Postman collection for these samples, or an OpenAPI (Swagger) spec describing the API that handles these payloads?
+
+
+
 
 Would you like a downloadable `.sql` file or a PowerShell script to execute and deploy these to your Azure SQL environment?
 
