@@ -543,6 +543,57 @@ By following these steps, you'll have a serverless API in Azure that uses Servic
 7. A reporting service pulls logs and data from SQL + Table Storage for analysis.
 
 ---
+Here’s a sample JSON payload for the **`FloorPlanUpdatedEvent`**, which you can send to Azure Service Bus or log for processing in Azure Functions when a user updates a floor plan.
+
+---
+
+### 📦 **Sample `FloorPlanUpdatedEvent` Payload**
+
+```json
+{
+  "eventId": "99a7c8e3-4e9f-4e8f-a221-d9a458d5f3e5",
+  "eventType": "FloorPlanUpdatedEvent",
+  "timestamp": "2025-05-11T14:23:30Z",
+  "floorPlan": {
+    "floorPlanId": "44f83f47-fb69-4b7f-9fcb-6e4edccae3f7",
+    "projectId": "e1b12d5e-378c-42ae-bacc-f0f83d84c71b",
+    "floorPlanName": "2BHK North-Facing",
+    "baseFilePath": "https://yourstorage.blob.core.windows.net/floorplans/2bhk-north.svg",
+    "thumbnailUrl": "https://yourstorage.blob.core.windows.net/thumbnails/2bhk-north.png"
+  },
+  "updatedBy": {
+    "userId": "bde02e77-147e-44f6-a7b5-15f81ec0c802",
+    "username": "jdoe",
+    "email": "jdoe@example.com"
+  },
+  "changeSummary": {
+    "componentType": "Wall",
+    "propertiesChanged": {
+      "color": "#cccccc",
+      "thickness": "6in"
+    },
+    "positionChanged": {
+      "x": 200.5,
+      "y": 118.75
+    }
+  }
+}
+```
+
+---
+
+### 🧠 Key Elements Explained
+
+| Field           | Description                                                                     |
+| --------------- | ------------------------------------------------------------------------------- |
+| `eventId`       | Unique ID for the event (used for deduplication/tracking).                      |
+| `eventType`     | Useful when multiple event types are published to the same topic.               |
+| `timestamp`     | ISO 8601 timestamp when the event occurred.                                     |
+| `floorPlan`     | Metadata about the floor plan that was changed.                                 |
+| `updatedBy`     | User info who triggered the event (for audit/log).                              |
+| `changeSummary` | Captures which component was changed, what properties were modified, and where. |
+
+Would you like this serialized in a file and added to the previous ZIP or a new one?
 
 ## 🧠 **Design Highlights**
 
