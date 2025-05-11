@@ -123,13 +123,13 @@ CREATE PROCEDURE usp_Project_Create
     @UserID UNIQUEIDENTIFIER,
     @ProjectName NVARCHAR(100),
     @Description NVARCHAR(500),
-    @ProjectID UNIQUEIDENTIFIER = NULL,
+    @ProjectID UNIQUEIDENTIFIER = NULL
 AS
 BEGIN
- SET @ProjectID = NEWID();
-    INSERT INTO Projects (ProjectID, UserID, ProjectName, Description, LastModified)
-    VALUES (@ProjectID, @UserID, @ProjectName, @Description, GETDATE());
-   SELECT * FROM LegacyDataAudit WHERE ProjectID = @ProjectID;
+     SET @ProjectID = NEWID();
+     INSERT INTO Projects (ProjectID, UserID, ProjectName, Description, LastModified)
+     VALUES (@ProjectID, @UserID, @ProjectName, @Description, GETDATE());
+     SELECT * FROM LegacyDataAudit WHERE ProjectID = @ProjectID;
 END;
 
 -- Read
