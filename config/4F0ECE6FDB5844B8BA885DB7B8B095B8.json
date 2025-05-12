@@ -9,6 +9,98 @@
   "Type": "",
   "DataFlowProcess": [
     {
+      "Key": "AzureTableStorageProcess",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "CreateRecordForAzureTable",
+          "Value": "yes"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "TableName",
+          "Value": "training20250506"
+        }
+      ]
+    },
+    {
+      "Key": "MessageBuilderProcess",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "QueryBuilderDynamic",
+          "Value": "yes"
+        },
+        {
+          "Key": "statement",
+          "Value": "RowKey eq '@{RowKey}'"
+        },
+        {
+          "Key": "filters",
+          "Value": "[{\"Key\": \"@{RowKey}\",\"Value\": \"RowKey\"}]"
+        }
+      ]
+    },
+    {
+      "Key": "Azure_Table_Storage",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "SimpleTableSearch",
+          "Value": "yes"
+        },
+        {
+          "Key": "QueryField",
+          "Value": "query"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "TableName",
+          "Value": "training20250506"
+        },
+        {
+          "Key": "DefaultResult",
+          "Value": "No Records Found"
+        }
+      ]
+    },
+    {
+      "Key": "MessageBuilderProcess",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "ExtractObjectFromArrayObject",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "MessageBuilderProcess",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "StorePayloadInReponse",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
       "Key": "MessageBuilderProcess",
       "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
       "Async": "false",
@@ -59,6 +151,51 @@
           "Value": "yes"
         }
       ]
+    },
+    {
+      "Key": "MessageBuilderProcess",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.MessageBuilderProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "GetPayloadFromReponse",
+          "Value": "yes"
+        }
+      ]
+    },
+    {
+      "Key": "Azure_Table_Storage",
+      "Type": "Xenhey.BPM.Core.Net8.Processes.AzureTableStorageProcess",
+      "Async": "false",
+      "IsEnable": "true",
+      "DataFlowProcessParameters": [
+        {
+          "Key": "DeleteRecordFromTableStore",
+          "Value": "yes"
+        },
+        {
+          "Key": "statement",
+          "Value": "UserID eq '@{UserID}'"
+        },
+        {
+          "Key": "filters",
+          "Value": "[{\"Key\": \"@{UserID}\",\"Value\": \"UserID\"}]"
+        },
+        {
+          "Key": "StorageAccount",
+          "Value": "AzureWebJobsStorage"
+        },
+        {
+          "Key": "TableName",
+          "Value": "training20250506"
+        },
+        {
+          "Key": "DefaultResult",
+          "Value": "No Records Found"
+        }
+      ]
     }
+
   ]
 }
